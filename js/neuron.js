@@ -5,8 +5,8 @@
  *                          bias.
  */
 function Neuron(inputs, hasBias) {
+	this.hasBias_ = hasBias;
 	this.error_ = 0.0;
-	this.errorDelta_ = 0.0;
 
 	this.inputNeurons_ = [];
 	this.inputWeights_ = [];
@@ -45,27 +45,22 @@ Neuron.prototype.setError = function(givenError) {
  * @param  {float} momentum     The momentum of the change
  */
 Neuron.prototype.updateWeights = function(learningRate, momentum) {
-	var delta = this.errorDelta_;
-	for (var i = 1; i < this.inputNeurons_.length; i++) {
+	var delta = this.outputValue_ * (1 - this.outputValue_) * this.error_;
+	var startNeuron = 0;
+	if (this.hasBias_) {
+		// Set the bias
+		this.inputWeights_[0] += learningRate * delta;
+		startNeuron = 1;
+	}
+	for (var i = startNeuron; i < this.inputNeurons_.length; i++) {
 		var lastChange = this.lastWeightChanges_[i];
 		var incomingOutput = this.inputNeurons_[i].getOutput();
 		var change =
-			(learningRate * delta * incomingOutput) +
-			(momentum * lastChange);
+			(learningRate * delta * incomingOutput);// +
+			// (momentum * lastChange);
 		this.lastWeightChanges_[i] = change;
 		this.inputWeights_[i] += change;
 	}
-	// Set the bias
-	this.inputWeights_[0] += learningRate * delta;
-};
-
-
-/**
- * Sets the error delta of this neuron.
- * @param {float} errorDelta Error delta to set.
- */
-Neuron.prototype.setErrorDelta = function(errorDelta) {
-	this.errorDelta_ = errorDelta;
 };
 
 
@@ -75,15 +70,6 @@ Neuron.prototype.setErrorDelta = function(errorDelta) {
  */
 Neuron.prototype.getError = function() {
 	return this.error_;
-};
-
-
-/**
- * Gets the error delta of this neuron
- * @return {float} The error delta of this neuron
- */
-Neuron.prototype.getErrorDelta = function() {
-	return this.errorDelta_;
 };
 
 

@@ -68,7 +68,7 @@ NeuralNetwork.prototype.calculateError_ = function(actual, expected) {
 		var error = expected[i] - actual[i];
 		// Sigmoid error propagation (derivative)
 		outerNeurons[i].setError(error);
-		outerNeurons[i].setErrorDelta(error * actual[i] * (1 - actual[i]));
+		//outerNeurons[i].setErrorDelta(error * actual[i] * (1 - actual[i]));
 	}
 
 	for (var i = this.hiddenLayers_.length - 1; i >= 0; i--) {

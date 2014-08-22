@@ -59,13 +59,12 @@ Layer.prototype.propagateError = function(layerInFront) {
 		var output = myNeuron.getOutput();
 		var error = 0;
 		for (var j = 0; j < nextNeurons.length; j++) {
-			var delta = nextNeurons[j].getErrorDelta();
-			var weight = nextNeurons[j].getWeight(i);
-			error += delta * weight;
+			var nextNeuronError = nextNeurons[j].getError();
+			var connectionWeight = nextNeurons[j].getWeight(i);
+			error += nextNeuronError * connectionWeight;
 		}
 		myNeuron.setError(error);
 		//console.log(error * output * (1 - output));
-		myNeuron.setErrorDelta(error * output * (1 - output));
 	}
 };
 
